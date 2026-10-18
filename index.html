@@ -4,13 +4,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mathe-Abenteuer</title>
+<title>🦊 Mathe-Abenteuer</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;color:#302653;background:linear-gradient(135deg,#dff8ff,#fff0d9,#f1e8ff)}
-header{text-align:center;padding:25px 12px;background:#ffffffd9}
-h1{font-size:clamp(28px,6vw,44px);margin:5px;color:#6845cc}
-main{max-width:850px;margin:auto;padding:14px}
+header{text-align:center;padding:24px 12px;background:linear-gradient(120deg,#fff,#f2eaff,#e7faff);border-bottom:4px solid #d8caff}
+header h1{font-size:clamp(28px,6vw,44px);margin:5px;color:#6845cc}
+header p{margin:7px}
+main{max-width:780px;margin:auto;padding:14px}
 .card{background:white;padding:20px;border-radius:20px;margin:14px 0;box-shadow:0 5px 18px #43336a16}
 h2{color:#6845cc;margin-top:0}
 label{display:block;font-weight:bold;margin:13px 0 6px}
@@ -24,40 +25,47 @@ button:disabled{opacity:.5}
 .stat{background:#f1edff;border-radius:12px;padding:12px;flex:1;min-width:90px}
 .stat strong{display:block;font-size:23px;margin-top:5px}
 .progress{height:12px;background:#eee9ff;border-radius:12px;overflow:hidden;margin-top:16px}
-#bar{height:100%;width:0;background:#55c989}
+#bar{height:100%;width:0;background:#55c989;transition:width .3s}
 #topic{color:#6845cc;font-weight:bold}
-#question{font-size:clamp(24px,5vw,34px);text-align:center;padding:22px 10px;background:#f6f2ff;border-radius:14px;min-height:115px;display:flex;align-items:center;justify-content:center}
+#question{font-size:clamp(23px,5vw,34px);text-align:center;padding:24px 12px;background:#f6f2ff;border-radius:14px;min-height:125px;display:flex;align-items:center;justify-content:center;white-space:pre-line}
 #answer{text-align:center;font-size:22px}
 #feedback{padding:12px;border-radius:12px;margin-top:12px}
 .good{background:#dcf8e5;color:#17653b}
 .bad{background:#ffe4e4;color:#982b35}
-#certificate{background:#fffdf1;border:7px double #e4b33c;text-align:center;padding:24px}
-#certificate h2{color:#a66d14;font-size:28px}
-#certName{font-size:30px;font-weight:bold;margin:20px}
-footer{text-align:center;padding:20px}
+#hint{color:#6746bc;font-weight:bold}
+#certificate{background:#fffdf1;border:8px double #e4b33c;text-align:center;padding:25px;margin-top:20px}
+#certificate h2{color:#a66d14;font-size:clamp(25px,5vw,34px)}
+#certName{font-size:clamp(26px,6vw,36px);font-weight:bold;margin:20px;color:#6845cc}
+.cert-stars{font-size:30px}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99}
+footer{text-align:center;padding:20px;color:#65577d}
 @media print{
- body *{visibility:hidden}
- #certificate,#certificate *{visibility:visible}
- #certificate{position:absolute;left:0;top:0;width:100%}
- .no-print{display:none!important}
+  @page{size:A4;margin:12mm}
+  body{background:white}
+  body *{visibility:hidden!important}
+  #certificate,#certificate *{visibility:visible!important}
+  #certificate{display:block!important;position:absolute;left:0;top:0;width:100%;margin:0;border:8px double #d6a42f;box-shadow:none}
+  #certificate button{display:none!important}
 }
 </style>
 </head>
 <body>
+<canvas id="confetti"></canvas>
+
 <header>
 <h1>🦊 Mathe-Abenteuer 🌈</h1>
 <p>Rechnen, entdecken und Sterne sammeln! ⭐</p>
-<p>Für die 1. bis 4. Klasse</p>
+<p>Für clevere Mathe-Entdecker der 1. bis 4. Klasse</p>
 </header>
 
 <main>
 <section class="card" id="setup">
 <h2>🎒 Dein Abenteuer beginnt!</h2>
 
-<label for="player">Dein Name</label>
-<input id="player" maxlength="35" placeholder="Wie heißt du?">
+<label for="player">Wie heißt du?</label>
+<input id="player" maxlength="35" placeholder="Dein Vorname">
 
-<label for="grade">Deine Klasse</label>
+<label for="grade">Welche Klasse besuchst du?</label>
 <select id="grade">
 <option value="1">1. Klasse</option>
 <option value="2">2. Klasse</option>
@@ -72,26 +80,26 @@ footer{text-align:center;padding:20px}
 <option value="word">📖 Sachaufgaben</option>
 <option value="measure">📏 Größen, Geld und Zeit</option>
 <option value="geometry">🔷 Geometrie</option>
-<option value="data">🧠 Knobeln</option>
+<option value="data">🧠 Knobeln und Daten</option>
 </select>
 
 <label for="operation">Rechenart</label>
 <select id="operation">
 <option value="mix">Alle passenden Rechenarten</option>
-<option value="add">Plus</option>
-<option value="sub">Minus</option>
-<option value="mul">Mal</option>
-<option value="div">Geteilt</option>
+<option value="add">➕ Plus</option>
+<option value="sub">➖ Minus</option>
+<option value="mul">✖️ Mal</option>
+<option value="div">➗ Geteilt</option>
 </select>
 
 <label for="difficulty">Schwierigkeit</label>
 <select id="difficulty">
-<option value="easy">Leicht</option>
-<option value="normal" selected>Mittel</option>
-<option value="hard">Knifflig</option>
+<option value="easy">🌱 Leicht</option>
+<option value="normal" selected>⭐ Mittel</option>
+<option value="hard">🚀 Knifflig</option>
 </select>
 
-<label for="rounds">Anzahl der Aufgaben</label>
+<label for="rounds">Wie viele Aufgaben möchtest du lösen?</label>
 <select id="rounds">
 <option value="5">5 Aufgaben</option>
 <option value="10" selected>10 Aufgaben</option>
@@ -121,19 +129,21 @@ footer{text-align:center;padding:20px}
 </section>
 
 <section class="card hidden" id="result">
-<h2>🏆 Dein Ergebnis</h2>
+<h2>🏆 Dein Abenteuer-Ergebnis</h2>
 <div id="resultText"></div>
+
 <div id="certificate" class="hidden">
 <h2>🏅 Mathe-Abenteuer-Zertifikat 🏅</h2>
-<p>Dieses Zertifikat erhält</p>
+<p>Dieses Zertifikat wird verliehen an</p>
 <div id="certName"></div>
 <p>für eine tolle Leistung beim Mathe-Abenteuer!</p>
 <p id="certDetails"></p>
-<p style="font-size:30px">⭐ 🌈 🦊 ⭐</p>
+<p class="cert-stars">⭐ 🌈 🦊 ⭐</p>
 <p>Weiter so – du bist ein Mathe-Star!</p>
 <p id="certDate"></p>
-<button class="no-print" onclick="window.print()">🖨️ Zertifikat drucken</button>
+<button onclick="window.print()">🖨️ Zertifikat drucken</button>
 </div>
+
 <button onclick="newGame()">🔄 Noch einmal spielen</button>
 <button class="secondary" onclick="backToSetup()">⚙️ Einstellungen ändern</button>
 </section>
@@ -144,7 +154,8 @@ footer{text-align:center;padding:20px}
 <button class="secondary" onclick="clearRecords()">Rekorde löschen</button>
 </section>
 </main>
-<footer>Mit Köpfchen und Spaß wird Mathe zum Abenteuer! 🦊</footer>
+
+<footer>Mit Köpfchen, Mut und Spaß wird Mathe zum Abenteuer! 🦊🌈⭐</footer>
 
 <script>
 "use strict";
@@ -152,6 +163,7 @@ footer{text-align:center;padding:20px}
 const $ = id => document.getElementById(id);
 let grade=1,total=10,current=0,points=0,right=0;
 let task=null,locked=false,playerName="Mathe-Star",settings={};
+let confettiTimer=null;
 
 function rand(min,max){
   return Math.floor(Math.random()*(max-min+1))+min;
@@ -164,11 +176,12 @@ function updateHint(){
   grade=Number($("grade").value);
   const hints={
     1:"Klasse 1: Plus und Minus bis 20.",
-    2:"Klasse 2: Zahlen bis 100 und Einmaleins.",
+    2:"Klasse 2: Zahlen bis 100, Einmaleins und Größen.",
     3:"Klasse 3: Zahlen bis 1.000 und Sachaufgaben.",
     4:"Klasse 4: Große Zahlen, Brüche und Geometrie."
   };
   $("gradeHint").textContent=hints[grade];
+
   [...$("operation").options].forEach(o=>{
     o.disabled=grade===1 && ["mul","div"].includes(o.value);
   });
@@ -188,10 +201,20 @@ function startGame(){
     operation:$("operation").value,
     difficulty:$("difficulty").value
   };
-  current=0;points=0;right=0;locked=false;
+
+  if(grade===1 && ["mul","div"].includes(settings.operation)){
+    settings.operation="mix";
+  }
+
+  current=0;
+  points=0;
+  right=0;
+  locked=false;
+
   $("setup").classList.add("hidden");
   $("records").classList.add("hidden");
   $("result").classList.add("hidden");
+  $("certificate").classList.add("hidden");
   $("game").classList.remove("hidden");
   nextTask();
 }
@@ -206,90 +229,137 @@ function numberTask(word=false){
   if(!ops.includes(op)) op=pick(ops);
 
   let a,b,answer,sign;
+
   if(op==="add"){
-    a=rand(0,max);b=rand(0,max-a);
-    answer=a+b;sign="+";
+    a=rand(0,max);
+    b=rand(0,max-a);
+    answer=a+b;
+    sign="+";
   }else if(op==="sub"){
-    a=rand(0,max);b=rand(0,a);
-    answer=a-b;sign="−";
+    a=rand(0,max);
+    b=rand(0,a);
+    answer=a-b;
+    sign="−";
   }else if(op==="mul"){
     if(grade===2){a=rand(1,10);b=rand(1,10);}
     else if(grade===3){a=rand(2,12);b=rand(2,12);}
     else{a=rand(10,99);b=rand(2,12);}
-    answer=a*b;sign="×";
+    answer=a*b;
+    sign="×";
   }else{
     if(grade===2){b=rand(1,10);answer=rand(1,10);}
     else if(grade===3){b=rand(2,12);answer=rand(2,30);}
     else{b=rand(2,99);answer=rand(2,999);}
-    a=b*answer;sign="÷";
+    a=b*answer;
+    sign="÷";
   }
 
   let question=`${a} ${sign} ${b} = ?`;
+
   if(word){
     const templates={
       add:`Du hast ${a} Murmeln und bekommst ${b} dazu. Wie viele hast du jetzt?`,
       sub:`Du hast ${a} Bonbons und verschenkst ${b}. Wie viele bleiben übrig?`,
-      mul:`Es gibt ${a} Päckchen mit je ${b} Sternen. Wie viele Sterne sind es?`,
-      div:`${a} Kekse werden gerecht auf ${b} Kinder verteilt. Wie viele bekommt jedes Kind?`
+      mul:`Es gibt ${a} Päckchen mit je ${b} Sternen. Wie viele Sterne sind es insgesamt?`,
+      div:`${a} Kekse werden gerecht auf ${b} Kinder verteilt. Wie viele Kekse bekommt jedes Kind?`
     };
     question=templates[op];
   }
-  return {question,answer,hint:"Überlege, ob du addieren, subtrahieren, multiplizieren oder teilen musst.",topic:word?"Sachaufgabe":"Rechnen"};
+
+  return {
+    question:question,
+    answer:answer,
+    hint:"Überlege, welche Rechenart passt.",
+    topic:word?"Sachaufgabe":"Rechnen"
+  };
 }
 
 function measureTask(){
   if(grade===1){
     const a=rand(2,10),b=rand(1,a-1);
-    return {question:`Du hast ${a} Euro und gibst ${b} Euro aus. Wie viele Euro bleiben?`,
-      answer:a-b,hint:"Ziehe das ausgegebene Geld ab.",topic:"Geld"};
+    return {
+      question:`Du hast ${a} Euro und gibst ${b} Euro aus. Wie viele Euro bleiben?`,
+      answer:a-b,
+      hint:"Ziehe das ausgegebene Geld ab.",
+      topic:"Geld"
+    };
   }
+
   if(grade===2){
     const n=rand(1,9);
-    return {question:`Wie viele Zentimeter sind ${n} Dezimeter?`,
-      answer:n*10,hint:"1 Dezimeter = 10 Zentimeter.",topic:"Längen"};
+    return {
+      question:`Wie viele Zentimeter sind ${n} Dezimeter?`,
+      answer:n*10,
+      hint:"1 Dezimeter sind 10 Zentimeter.",
+      topic:"Längen"
+    };
   }
+
   if(grade===3){
     const n=rand(2,9);
-    return {question:`Wie viele Zentimeter sind ${n} Meter?`,
-      answer:n*100,hint:"1 Meter = 100 Zentimeter.",topic:"Längen"};
+    return {
+      question:`Wie viele Zentimeter sind ${n} Meter?`,
+      answer:n*100,
+      hint:"1 Meter sind 100 Zentimeter.",
+      topic:"Längen"
+    };
   }
+
   const n=rand(2,9);
-  return {question:`Wie viele Meter sind ${n} Kilometer?`,
-    answer:n*1000,hint:"1 Kilometer = 1.000 Meter.",topic:"Längen"};
+  return {
+    question:`Wie viele Meter sind ${n} Kilometer?`,
+    answer:n*1000,
+    hint:"1 Kilometer sind 1.000 Meter.",
+    topic:"Längen"
+  };
 }
 
 function geometryTask(){
+  // Alle Geometrie-Aufgaben liefern question UND answer.
   if(grade===1){
     return pick([
       {question:"Wie viele Ecken hat ein Dreieck?",answer:3,hint:"Zähle die drei Ecken.",topic:"Geometrie"},
       {question:"Wie viele Seiten hat ein Quadrat?",answer:4,hint:"Ein Quadrat hat vier Seiten.",topic:"Geometrie"},
-      {question:"Wie viele Ecken hat ein Rechteck?",answer:4,hint:"Zähle die Ecken.",topic:"Geometrie"}
+      {question:"Wie viele Ecken hat ein Rechteck?",answer:4,hint:"Zähle die Ecken.",topic:"Geometrie"},
+      {question:"Wie viele Seiten hat ein Dreieck?",answer:3,hint:"Ein Dreieck hat drei Seiten.",topic:"Geometrie"},
+      {question:"Wie viele Ecken hat ein Quadrat?",answer:4,hint:"Zähle die Ecken.",topic:"Geometrie"}
     ]);
   }
+
   if(grade===2){
     return pick([
-      {question:"Wie viele Flächen hat ein Würfel?",answer:6,hint:"Oben, unten und vier Seiten.",topic:"Geometrie"},
+      {question:"Wie viele Flächen hat ein Würfel insgesamt?",answer:6,hint:"Oben, unten und vier Seiten.",topic:"Geometrie"},
       {question:"Wie viele Ecken hat ein Würfel?",answer:8,hint:"Zähle alle Eckpunkte.",topic:"Geometrie"},
-      {question:"Wie viele Kanten hat ein Würfel?",answer:12,hint:"Zähle die Kanten.",topic:"Geometrie"}
+      {question:"Wie viele Kanten hat ein Würfel?",answer:12,hint:"Zähle die Kanten.",topic:"Geometrie"},
+      {question:"Wie viele Seiten hat ein Dreieck?",answer:3,hint:"Ein Dreieck hat drei Seiten.",topic:"Geometrie"},
+      {question:"Wie viele Seiten hat ein Quadrat?",answer:4,hint:"Alle vier Seiten sind gleich lang.",topic:"Geometrie"}
     ]);
   }
-  const a=rand(2,grade===3?20:50),b=rand(2,grade===3?20:50);
+
   if(grade===3){
-    return {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist die Fläche in cm²?`,
-      answer:a*b,hint:"Fläche = Länge × Breite.",topic:"Geometrie"};
+    const a=rand(2,20),b=rand(2,20);
+    return pick([
+      {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist seine Fläche in cm²?`,answer:a*b,hint:"Fläche = Länge × Breite.",topic:"Geometrie"},
+      {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist sein Umfang in cm?`,answer:2*(a+b),hint:"Addiere Länge und Breite und verdopple.",topic:"Geometrie"}
+    ]);
   }
+
+  const a=rand(2,50),b=rand(2,50);
   return pick([
-    {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist die Fläche in cm²?`,
-      answer:a*b,hint:"Fläche = Länge × Breite.",topic:"Geometrie"},
-    {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist sein Umfang in cm?`,
-      answer:2*(a+b),hint:"Umfang = 2 × (Länge + Breite).",topic:"Geometrie"}
+    {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist seine Fläche in cm²?`,answer:a*b,hint:"Fläche = Länge × Breite.",topic:"Geometrie"},
+    {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist sein Umfang in cm?`,answer:2*(a+b),hint:"Umfang = 2 × (Länge + Breite).",topic:"Geometrie"},
+    {question:`Ein Quadrat hat eine Seitenlänge von ${a} cm. Wie groß ist seine Fläche in cm²?`,answer:a*a,hint:"Multipliziere die Seitenlänge mit sich selbst.",topic:"Geometrie"}
   ]);
 }
 
 function dataTask(){
   const a=rand(3,20),b=rand(2,20);
-  return {question:`Eine Gruppe sammelt ${a} Sterne, eine zweite ${b}. Wie viele Sterne sind es zusammen?`,
-    answer:a+b,hint:"Addiere beide Zahlen.",topic:"Knobeln"};
+  return {
+    question:`Eine Gruppe sammelt ${a} Sterne, eine zweite ${b}. Wie viele Sterne sind es zusammen?`,
+    answer:a+b,
+    hint:"Addiere beide Zahlen.",
+    topic:"Knobeln und Daten"
+  };
 }
 
 function makeTask(){
@@ -303,10 +373,15 @@ function makeTask(){
 }
 
 function nextTask(){
-  if(current>=total){finishGame();return;}
+  if(current>=total){
+    finishGame();
+    return;
+  }
+
   current++;
   task=makeTask();
   locked=false;
+
   $("counter").textContent=`${current}/${total}`;
   $("score").textContent=points;
   $("stars").textContent=`⭐ ${right}`;
@@ -323,52 +398,108 @@ function nextTask(){
 
 function checkAnswer(){
   if(locked)return;
+
   const value=$("answer").value.trim();
   if(value===""){
     $("feedback").textContent="Bitte gib zuerst eine Antwort ein. 😊";
     $("feedback").className="bad";
     return;
   }
+
   locked=true;
   const entered=Number(value.replace(",","."));
   const correct=Number(task.answer);
+
   if(Number.isFinite(entered)&&entered===correct){
     right++;
-    points+=settings.difficulty==="hard"?3:settings.difficulty==="normal"?2:1;
-    $("feedback").textContent="🎉 Richtig! Super gemacht!";
+    points+=settings.difficulty==="hard"?3:
+            settings.difficulty==="normal"?2:1;
+
+    $("feedback").textContent="🎉 Richtig! Super gemacht! ⭐";
     $("feedback").className="good";
+    launchConfetti();
   }else{
     $("feedback").textContent="Noch nicht ganz. Die richtige Antwort ist: "+task.answer;
     $("feedback").className="bad";
   }
+
   $("score").textContent=points;
   $("stars").textContent=`⭐ ${right}`;
   $("bar").style.width=`${current/total*100}%`;
   $("answer").disabled=true;
   $("check").disabled=true;
+
   const next=document.createElement("button");
   next.textContent=current===total?"Ergebnis ansehen 🏆":"Nächste Aufgabe ➜";
-  next.onclick=nextTask;
+  next.onclick=()=>nextTask();
   $("feedback").appendChild(document.createElement("br"));
   $("feedback").appendChild(next);
 }
 
 function showHint(){
-  if(task) $("hint").textContent="💡 Tipp: "+task.hint;
+  if(task)$("hint").textContent="💡 Tipp: "+task.hint;
 }
+
 $("answer").addEventListener("keydown",e=>{
   if(e.key==="Enter")checkAnswer();
 });
 
+// Konfetti-Animation bei jeder richtigen Antwort.
+function launchConfetti(){
+  const canvas=$("confetti");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+  const colors=["#ff5470","#ffbd3e","#54c7ec","#8e6cff","#54cf8b","#ff8a36"];
+  const pieces=Array.from({length:140},()=>({
+    x:Math.random()*canvas.width,
+    y:-Math.random()*canvas.height*.5,
+    size:rand(5,10),
+    speed:rand(3,8),
+    drift:Math.random()*4-2,
+    angle:Math.random()*6,
+    spin:Math.random()*.2-.1,
+    color:pick(colors)
+  }));
+
+  if(confettiTimer)cancelAnimationFrame(confettiTimer);
+  let frame=0;
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.y+=p.speed;
+      p.x+=p.drift;
+      p.angle+=p.spin;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle=p.color;
+      ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*.65);
+      ctx.restore();
+    });
+    frame++;
+    if(frame<100){
+      confettiTimer=requestAnimationFrame(draw);
+    }else{
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+  }
+  draw();
+}
+
 function finishGame(){
   $("game").classList.add("hidden");
   $("result").classList.remove("hidden");
+
   const percent=Math.round(right/total*100);
+
   $("resultText").innerHTML=
     `<p>${escapeHTML(playerName)} – Klasse ${grade}</p>
-    <p>Richtig: <strong>${right} von ${total}</strong></p>
-    <p>Ergebnis: <strong>${percent}%</strong></p>
-    <p>Punkte: <strong>${points} ⭐</strong></p>`+
+     <p>Du hast <strong>${right} von ${total}</strong> Aufgaben richtig gelöst.</p>
+     <p>Ergebnis: <strong>${percent}%</strong></p>
+     <p>Punkte: <strong>${points} ⭐</strong></p>`+
     (percent>=75
       ?"<p>🎉 Großartig! Du hast das Abenteuer erfolgreich abgeschlossen!</p>"
       :"<p>Übe weiter. Du schaffst es beim nächsten Mal! 💪</p>");
@@ -376,28 +507,41 @@ function finishGame(){
   if(percent>=75){
     $("certificate").classList.remove("hidden");
     $("certName").textContent=playerName;
-    $("certDetails").textContent=`Klasse ${grade} · ${right}/${total} richtig · ${percent}%`;
-    $("certDate").textContent=new Date().toLocaleDateString("de-AT");
+    $("certDetails").textContent=`Klasse ${grade} · ${right} von ${total} richtig · ${percent}%`;
+    $("certDate").textContent="Datum: "+new Date().toLocaleDateString("de-AT");
   }else{
     $("certificate").classList.add("hidden");
   }
-  saveRecord({name:playerName,grade,percent,points,date:new Date().toLocaleDateString("de-AT")});
+
+  // Nur vollständig beendete Runden werden gespeichert.
+  saveRecord({
+    name:playerName,
+    grade:grade,
+    percent:percent,
+    points:points,
+    date:new Date().toLocaleDateString("de-AT")
+  });
+
   renderRecords();
 }
 
 function abortGame(){
-  if(!confirm("Wirklich abbrechen? Diese Runde wird nicht gespeichert."))return;
+  if(!confirm("Möchtest du abbrechen? Diese Runde wird nicht gespeichert und du erhältst kein Zertifikat."))return;
+
   $("game").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("certificate").classList.add("hidden");
   $("setup").classList.remove("hidden");
   $("records").classList.remove("hidden");
-  $("result").classList.add("hidden");
 }
 
 function newGame(){
   $("result").classList.add("hidden");
+  $("certificate").classList.add("hidden");
   $("setup").classList.remove("hidden");
   $("records").classList.remove("hidden");
 }
+
 function backToSetup(){newGame();}
 
 function escapeHTML(s){
@@ -431,6 +575,7 @@ function clearRecords(){
   localStorage.removeItem("matheAbenteuerRecords");
   renderRecords();
 }
+
 renderRecords();
 </script>
 </body>
