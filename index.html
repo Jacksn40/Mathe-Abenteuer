@@ -4,606 +4,433 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mathe-Abenteuer 🦊</title>
+<title>Mathe-Abenteuer</title>
 <style>
-:root {
-  --purple: #7357d9;
-  --light: #f4f0ff;
-  --orange: #ffbd69;
-  --green: #d9f7df;
-  --red: #ffe0e0;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#e7f8ff,#fff2df,#f4eaff);
-  color: #292642;
-}
-header {
-  text-align: center;
-  padding: 24px 12px;
-  background: #ffffffcc;
-  border-bottom: 3px solid #e4dcff;
-}
-header h1 { margin: 0 0 8px; font-size: clamp(28px,6vw,42px); }
-header p { margin: 5px; }
-main { max-width: 760px; margin: auto; padding: 16px; }
-.card {
-  background: white;
-  border-radius: 22px;
-  padding: 22px;
-  margin: 15px 0;
-  box-shadow: 0 5px 18px #453a7714;
-}
-h2 { margin-top: 0; color: var(--purple); }
-label { display: block; font-weight: bold; margin: 14px 0 6px; }
-input, select {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #ded8f6;
-  border-radius: 12px;
-  background: white;
-}
-button {
-  border: 0;
-  border-radius: 13px;
-  padding: 13px 18px;
-  margin: 6px 4px 6px 0;
-  background: var(--purple);
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-button:hover { filter: brightness(.95); }
-button:disabled { opacity: .5; cursor: not-allowed; }
-.secondary { background: #eee9ff; color: #493a9c; }
-.danger { background: #b94b57; }
-.stats {
-  display: flex;
-  justify-content: space-around;
-  gap: 8px;
-  flex-wrap: wrap;
-  text-align: center;
-}
-.stat {
-  background: var(--light);
-  padding: 12px;
-  border-radius: 14px;
-  flex: 1;
-  min-width: 95px;
-}
-.stat strong { display: block; font-size: 24px; }
-#question { font-size: clamp(24px,5vw,36px); text-align: center; margin: 25px 0; font-weight: bold; }
-#answer { font-size: 22px; text-align: center; }
-#feedback { padding: 12px; border-radius: 12px; margin-top: 12px; font-weight: bold; }
-.correct { background: var(--green); }
-.wrong { background: var(--red); }
-.hidden { display: none !important; }
-.progress {
-  height: 12px; background: #eee9ff; border-radius: 20px; overflow: hidden;
-}
-#progressBar { height: 100%; width: 0; background: #8bce94; transition: width .2s; }
-#certificate {
-  border: 8px double #e9b94f;
-  background: #fffdf4;
-  text-align: center;
-  padding: 28px 16px;
-}
-#certificate h2 { color: #a66d14; font-size: 30px; }
-#certificateName { font-size: 28px; font-weight: bold; margin: 22px 0; }
-footer { text-align: center; padding: 20px; color: #69627f; }
-@media print {
-  body * { visibility: hidden; }
-  #certificate, #certificate * { visibility: visible; }
-  #certificate {
-    position: absolute; left: 0; top: 0; width: 100%;
-    border: 8px double #d9ad48;
-  }
-  .no-print { display: none !important; }
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:#302653;background:linear-gradient(135deg,#dff8ff,#fff0d9,#f1e8ff)}
+header{text-align:center;padding:25px 12px;background:#ffffffd9}
+h1{font-size:clamp(28px,6vw,44px);margin:5px;color:#6845cc}
+main{max-width:850px;margin:auto;padding:14px}
+.card{background:white;padding:20px;border-radius:20px;margin:14px 0;box-shadow:0 5px 18px #43336a16}
+h2{color:#6845cc;margin-top:0}
+label{display:block;font-weight:bold;margin:13px 0 6px}
+input,select{width:100%;padding:12px;border:2px solid #ded5f8;border-radius:11px;font-size:16px;background:white}
+button{border:0;padding:13px 17px;border-radius:12px;margin:5px 3px 5px 0;font-size:16px;font-weight:bold;background:#7454dc;color:white;cursor:pointer}
+button:disabled{opacity:.5}
+.secondary{background:#eee8ff;color:#493594}
+.danger{background:#df5665}
+.hidden{display:none!important}
+.stats{display:flex;gap:8px;justify-content:space-around;text-align:center;flex-wrap:wrap}
+.stat{background:#f1edff;border-radius:12px;padding:12px;flex:1;min-width:90px}
+.stat strong{display:block;font-size:23px;margin-top:5px}
+.progress{height:12px;background:#eee9ff;border-radius:12px;overflow:hidden;margin-top:16px}
+#bar{height:100%;width:0;background:#55c989}
+#topic{color:#6845cc;font-weight:bold}
+#question{font-size:clamp(24px,5vw,34px);text-align:center;padding:22px 10px;background:#f6f2ff;border-radius:14px;min-height:115px;display:flex;align-items:center;justify-content:center}
+#answer{text-align:center;font-size:22px}
+#feedback{padding:12px;border-radius:12px;margin-top:12px}
+.good{background:#dcf8e5;color:#17653b}
+.bad{background:#ffe4e4;color:#982b35}
+#certificate{background:#fffdf1;border:7px double #e4b33c;text-align:center;padding:24px}
+#certificate h2{color:#a66d14;font-size:28px}
+#certName{font-size:30px;font-weight:bold;margin:20px}
+footer{text-align:center;padding:20px}
+@media print{
+ body *{visibility:hidden}
+ #certificate,#certificate *{visibility:visible}
+ #certificate{position:absolute;left:0;top:0;width:100%}
+ .no-print{display:none!important}
 }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>🦊 Mathe-Abenteuer 🌈</h1>
-  <p>Rechnen, entdecken und Sterne sammeln! ⭐</p>
-  <p>Für clevere Mathe-Entdecker der 1. bis 4. Klasse</p>
+<h1>🦊 Mathe-Abenteuer 🌈</h1>
+<p>Rechnen, entdecken und Sterne sammeln! ⭐</p>
+<p>Für die 1. bis 4. Klasse</p>
 </header>
 
 <main>
-  <section class="card" id="setup">
-    <h2>🎒 Dein Abenteuer beginnt!</h2>
+<section class="card" id="setup">
+<h2>🎒 Dein Abenteuer beginnt!</h2>
 
-    <label for="player">Wie heißt du?</label>
-    <input id="player" maxlength="35" placeholder="Dein Vorname">
+<label for="player">Dein Name</label>
+<input id="player" maxlength="35" placeholder="Wie heißt du?">
 
-    <label for="grade">Welche Klasse besuchst du?</label>
-    <select id="grade">
-      <option value="1">1. Klasse</option>
-      <option value="2">2. Klasse</option>
-      <option value="3">3. Klasse</option>
-      <option value="4">4. Klasse</option>
-    </select>
+<label for="grade">Deine Klasse</label>
+<select id="grade">
+<option value="1">1. Klasse</option>
+<option value="2">2. Klasse</option>
+<option value="3">3. Klasse</option>
+<option value="4">4. Klasse</option>
+</select>
 
-    <label for="area">Themengebiet</label>
-    <select id="area">
-      <option value="mix">🎲 Alles gemischt</option>
-      <option value="calc">➕ Rechnen</option>
-      <option value="word">📖 Sachaufgaben</option>
-      <option value="measure">📏 Größen, Geld und Zeit</option>
-      <option value="geometry">🔷 Geometrie</option>
-      <option value="data">📊 Knobeln und Daten</option>
-    </select>
+<label for="area">Themengebiet</label>
+<select id="area">
+<option value="mix">🎲 Alles gemischt</option>
+<option value="calc">➕ Rechnen</option>
+<option value="word">📖 Sachaufgaben</option>
+<option value="measure">📏 Größen, Geld und Zeit</option>
+<option value="geometry">🔷 Geometrie</option>
+<option value="data">🧠 Knobeln</option>
+</select>
 
-    <label for="operation">Rechenart</label>
-    <select id="operation">
-      <option value="mix">Alle passenden Rechenarten</option>
-      <option value="add">➕ Plus</option>
-      <option value="sub">➖ Minus</option>
-      <option value="mul">✖️ Mal</option>
-      <option value="div">➗ Geteilt</option>
-    </select>
+<label for="operation">Rechenart</label>
+<select id="operation">
+<option value="mix">Alle passenden Rechenarten</option>
+<option value="add">Plus</option>
+<option value="sub">Minus</option>
+<option value="mul">Mal</option>
+<option value="div">Geteilt</option>
+</select>
 
-    <label for="difficulty">Schwierigkeit</label>
-    <select id="difficulty">
-      <option value="easy">🌱 Leicht</option>
-      <option value="normal" selected>⭐ Mittel</option>
-      <option value="hard">🚀 Knifflig</option>
-    </select>
+<label for="difficulty">Schwierigkeit</label>
+<select id="difficulty">
+<option value="easy">Leicht</option>
+<option value="normal" selected>Mittel</option>
+<option value="hard">Knifflig</option>
+</select>
 
-    <label for="rounds">Wie viele Aufgaben möchtest du lösen?</label>
-    <select id="rounds">
-      <option value="5">5 Aufgaben</option>
-      <option value="10" selected>10 Aufgaben</option>
-      <option value="15">15 Aufgaben</option>
-    </select>
+<label for="rounds">Anzahl der Aufgaben</label>
+<select id="rounds">
+<option value="5">5 Aufgaben</option>
+<option value="10" selected>10 Aufgaben</option>
+<option value="15">15 Aufgaben</option>
+</select>
 
-    <p id="gradeHint">Wähle deine Klasse und starte!</p>
-    <button onclick="startGame()">🚀 Abenteuer starten!</button>
-  </section>
+<p id="gradeHint">Wähle deine Klasse und starte!</p>
+<button onclick="startGame()">🚀 Abenteuer starten!</button>
+</section>
 
-  <section class="card hidden" id="game">
-    <div class="stats">
-      <div class="stat">Aufgabe<strong id="counter">1/10</strong></div>
-      <div class="stat">Punkte<strong id="score">0</strong></div>
-      <div class="stat">Sterne<strong id="stars">⭐ 0</strong></div>
-    </div>
+<section class="card hidden" id="game">
+<div class="stats">
+<div class="stat">Aufgabe<strong id="counter">1/10</strong></div>
+<div class="stat">Punkte<strong id="score">0</strong></div>
+<div class="stat">Sterne<strong id="stars">⭐ 0</strong></div>
+</div>
+<div class="progress"><div id="bar"></div></div>
+<p id="topic"></p>
+<div id="question">Hier erscheint deine Frage.</div>
+<label for="answer">Deine Antwort</label>
+<input id="answer" placeholder="Antwort eingeben" autocomplete="off">
+<button id="check" onclick="checkAnswer()">✅ Antwort prüfen</button>
+<button class="secondary" onclick="showHint()">💡 Tipp</button>
+<div id="feedback" aria-live="polite"></div>
+<p id="hint"></p>
+<button class="danger" onclick="abortGame()">Abbrechen</button>
+</section>
 
-    <p id="topicLabel"></p>
-    <div class="progress"><div id="progressBar"></div></div>
-    <div id="question"></div>
+<section class="card hidden" id="result">
+<h2>🏆 Dein Ergebnis</h2>
+<div id="resultText"></div>
+<div id="certificate" class="hidden">
+<h2>🏅 Mathe-Abenteuer-Zertifikat 🏅</h2>
+<p>Dieses Zertifikat erhält</p>
+<div id="certName"></div>
+<p>für eine tolle Leistung beim Mathe-Abenteuer!</p>
+<p id="certDetails"></p>
+<p style="font-size:30px">⭐ 🌈 🦊 ⭐</p>
+<p>Weiter so – du bist ein Mathe-Star!</p>
+<p id="certDate"></p>
+<button class="no-print" onclick="window.print()">🖨️ Zertifikat drucken</button>
+</div>
+<button onclick="newGame()">🔄 Noch einmal spielen</button>
+<button class="secondary" onclick="backToSetup()">⚙️ Einstellungen ändern</button>
+</section>
 
-    <input id="answer" autocomplete="off" placeholder="Deine Antwort"
-           aria-label="Antwort eingeben">
-
-    <div style="text-align:center;margin-top:12px">
-      <button id="checkBtn" onclick="checkAnswer()">✅ Antwort prüfen</button>
-      <button class="secondary" onclick="showHint()">💡 Tipp</button>
-    </div>
-
-    <div id="feedback" aria-live="polite"></div>
-    <p id="hintText"></p>
-
-    <button class="danger" onclick="abortGame()">Abbrechen</button>
-  </section>
-
-  <section class="card hidden" id="result">
-    <h2>🏆 Dein Abenteuer-Ergebnis</h2>
-    <div id="resultText"></div>
-    <button onclick="newGame()">🔄 Noch einmal spielen</button>
-    <button class="secondary" onclick="backToSetup()">⚙️ Einstellungen ändern</button>
-
-    <div id="certificate" class="hidden">
-      <h2>🏅 Mathe-Abenteuer-Zertifikat 🏅</h2>
-      <p>Dieses Zertifikat wird verliehen an</p>
-      <div id="certificateName"></div>
-      <p>für eine tolle Leistung beim Mathe-Abenteuer!</p>
-      <p id="certificateDetails"></p>
-      <p style="font-size:32px">⭐ 🌈 ⭐ 🦊 ⭐</p>
-      <p>Weiter so – du bist ein Mathe-Star!</p>
-      <p id="certificateDate"></p>
-      <button class="no-print" onclick="window.print()">🖨️ Zertifikat drucken</button>
-    </div>
-  </section>
-
-  <section class="card" id="bestScore">
-    <h2>🌟 Deine Bestleistungen</h2>
-    <p id="recordText">Noch keine abgeschlossenen Abenteuer.</p>
-    <button class="secondary" onclick="clearRecords()">Rekorde löschen</button>
-  </section>
+<section class="card" id="records">
+<h2>🌟 Deine Bestleistungen</h2>
+<div id="recordText">Noch keine Bestleistungen gespeichert.</div>
+<button class="secondary" onclick="clearRecords()">Rekorde löschen</button>
+</section>
 </main>
-
-<footer>Mit Köpfchen, Mut und Spaß wird Mathe zum Abenteuer! 🦊</footer>
+<footer>Mit Köpfchen und Spaß wird Mathe zum Abenteuer! 🦊</footer>
 
 <script>
 "use strict";
 
 const $ = id => document.getElementById(id);
-let grade = 1, total = 10, current = 0, points = 0;
-let right = 0, task = null, locked = false, playerName = "";
-let gameSettings = {};
-let results = [];
+let grade=1,total=10,current=0,points=0,right=0;
+let task=null,locked=false,playerName="Mathe-Star",settings={};
 
-function rand(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function rand(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
 }
-function pick(arr) { return arr[rand(0, arr.length - 1)]; }
-
-function gradeMaximum() {
-  return [0, 20, 100, 1000, 1000000][grade];
+function pick(list){
+  return list[rand(0,list.length-1)];
 }
 
-function updateGradeHint() {
-  grade = Number($("grade").value);
-  const messages = {
-    1: "Bis 20 rechnen – nur Plus und Minus. 🌱",
-    2: "Bis 100 rechnen, Einmaleins und erste Größen. 🌟",
-    3: "Bis 1.000 rechnen und knifflige Sachaufgaben lösen. 🚀",
-    4: "Große Zahlen, Brüche, Geometrie und schwierige Aufgaben. 🏆"
+function updateHint(){
+  grade=Number($("grade").value);
+  const hints={
+    1:"Klasse 1: Plus und Minus bis 20.",
+    2:"Klasse 2: Zahlen bis 100 und Einmaleins.",
+    3:"Klasse 3: Zahlen bis 1.000 und Sachaufgaben.",
+    4:"Klasse 4: Große Zahlen, Brüche und Geometrie."
   };
-  $("gradeHint").textContent = messages[grade];
-  for (const option of $("operation").options) {
-    if (grade === 1 && ["mul","div"].includes(option.value)) {
-      option.disabled = true;
-    } else {
-      option.disabled = false;
-    }
-  }
-  if (grade === 1 && ["mul","div"].includes($("operation").value)) {
-    $("operation").value = "mix";
+  $("gradeHint").textContent=hints[grade];
+  [...$("operation").options].forEach(o=>{
+    o.disabled=grade===1 && ["mul","div"].includes(o.value);
+  });
+  if(grade===1 && ["mul","div"].includes($("operation").value)){
+    $("operation").value="mix";
   }
 }
-$("grade").addEventListener("change", updateGradeHint);
-updateGradeHint();
+$("grade").addEventListener("change",updateHint);
+updateHint();
 
-function startGame() {
-  playerName = $("player").value.trim() || "Mathe-Star";
-  grade = Number($("grade").value);
-  total = Number($("rounds").value);
-  gameSettings = {
-    area: $("area").value,
-    operation: $("operation").value,
-    difficulty: $("difficulty").value
+function startGame(){
+  playerName=$("player").value.trim()||"Mathe-Star";
+  grade=Number($("grade").value);
+  total=Number($("rounds").value);
+  settings={
+    area:$("area").value,
+    operation:$("operation").value,
+    difficulty:$("difficulty").value
   };
-  if (grade === 1 && ["mul","div"].includes(gameSettings.operation)) {
-    gameSettings.operation = "mix";
-  }
-  current = 0; points = 0; right = 0; locked = false;
-  results = [];
+  current=0;points=0;right=0;locked=false;
   $("setup").classList.add("hidden");
-  $("bestScore").classList.add("hidden");
+  $("records").classList.add("hidden");
   $("result").classList.add("hidden");
   $("game").classList.remove("hidden");
-  $("feedback").textContent = "";
-  $("hintText").textContent = "";
   nextTask();
 }
 
-function numberTask(wordMode = false) {
-  let max = gradeMaximum();
-  const diff = gameSettings.difficulty;
-  if (diff === "easy") max = Math.max(10, Math.floor(max / 4));
-  if (diff === "normal") max = Math.max(20, Math.floor(max / 2));
+function numberTask(word=false){
+  let max=[0,20,100,1000,1000000][grade];
+  if(settings.difficulty==="easy") max=Math.max(10,Math.floor(max/4));
+  if(settings.difficulty==="normal") max=Math.max(20,Math.floor(max/2));
 
-  let allowed = grade === 1 ? ["add","sub"] : ["add","sub","mul","div"];
-  let op = gameSettings.operation === "mix"
-    ? pick(allowed) : gameSettings.operation;
-  if (!allowed.includes(op)) op = pick(allowed);
+  const ops=grade===1?["add","sub"]:["add","sub","mul","div"];
+  let op=settings.operation==="mix"?pick(ops):settings.operation;
+  if(!ops.includes(op)) op=pick(ops);
 
-  let a, b, answer, sign, question;
-
-  if (op === "add") {
-    a = rand(0, max);
-    b = rand(0, Math.max(1, max - a));
-    answer = a + b; sign = "+";
-  } else if (op === "sub") {
-    a = rand(0, max);
-    b = rand(0, a);
-    answer = a - b; sign = "−";
-  } else if (op === "mul") {
-    if (grade === 2) {
-      a = rand(1,10); b = rand(1,10);
-    } else if (grade === 3) {
-      a = rand(2,12); b = rand(2,12);
-    } else {
-      a = rand(10,99); b = rand(2,12);
-    }
-    answer = a * b; sign = "×";
-  } else {
-    if (grade === 2) {
-      b = rand(1,10); answer = rand(1,10); a = b * answer;
-    } else if (grade === 3) {
-      b = rand(2,12); answer = rand(2,30); a = b * answer;
-    } else {
-      b = rand(2,99); answer = rand(2,999); a = b * answer;
-    }
-    sign = "÷";
+  let a,b,answer,sign;
+  if(op==="add"){
+    a=rand(0,max);b=rand(0,max-a);
+    answer=a+b;sign="+";
+  }else if(op==="sub"){
+    a=rand(0,max);b=rand(0,a);
+    answer=a-b;sign="−";
+  }else if(op==="mul"){
+    if(grade===2){a=rand(1,10);b=rand(1,10);}
+    else if(grade===3){a=rand(2,12);b=rand(2,12);}
+    else{a=rand(10,99);b=rand(2,12);}
+    answer=a*b;sign="×";
+  }else{
+    if(grade===2){b=rand(1,10);answer=rand(1,10);}
+    else if(grade===3){b=rand(2,12);answer=rand(2,30);}
+    else{b=rand(2,99);answer=rand(2,999);}
+    a=b*answer;sign="÷";
   }
 
-  question = `${a} ${sign} ${b} = ?`;
-  if (wordMode) {
-    const templates = {
-      add: [`${playerName} hat ${a} Murmeln und bekommt ${b} dazu. Wie viele sind es jetzt?`,
-            `Im Zauberwald stehen ${a} Bäume. ${b} neue werden gepflanzt. Wie viele sind es insgesamt?`],
-      sub: [`${playerName} hat ${a} Bonbons und verschenkt ${b}. Wie viele bleiben übrig?`,
-            `Im Korb liegen ${a} Äpfel. ${b} werden gegessen. Wie viele bleiben?`],
-      mul: [`Es gibt ${a} Päckchen mit je ${b} Sternen. Wie viele Sterne sind es zusammen?`,
-            `${a} Kinder haben jeweils ${b} Sticker. Wie viele Sticker sind das insgesamt?`],
-      div: [`${a} Kekse werden gerecht auf ${b} Kinder verteilt. Wie viele bekommt jedes Kind?`,
-            `${a} Sterne werden in Gruppen zu je ${b} Sternen sortiert. Wie viele Gruppen gibt es?`]
+  let question=`${a} ${sign} ${b} = ?`;
+  if(word){
+    const templates={
+      add:`Du hast ${a} Murmeln und bekommst ${b} dazu. Wie viele hast du jetzt?`,
+      sub:`Du hast ${a} Bonbons und verschenkst ${b}. Wie viele bleiben übrig?`,
+      mul:`Es gibt ${a} Päckchen mit je ${b} Sternen. Wie viele Sterne sind es?`,
+      div:`${a} Kekse werden gerecht auf ${b} Kinder verteilt. Wie viele bekommt jedes Kind?`
     };
-    question = pick(templates[op]);
+    question=templates[op];
   }
-  return { question, answer, hint: "Überlege, welche Rechenart passt.", topic: "Rechnen" };
+  return {question,answer,hint:"Überlege, ob du addieren, subtrahieren, multiplizieren oder teilen musst.",topic:word?"Sachaufgabe":"Rechnen"};
 }
 
-function measureTask() {
-  let q, a, hint;
-  if (grade === 1) {
-    const x = rand(2,10), y = rand(1,x-1);
-    q = `Du hast ${x} € und gibst ${y} € aus. Wie viele Euro bleiben?`;
-    a = x-y; hint = "Rechne den ausgegebenen Betrag weg.";
-  } else if (grade === 2) {
-    const kind = rand(1,3);
-    if (kind === 1) {
-      const x = rand(1,9), y = rand(1,9);
-      q = `Wie viele Zentimeter sind ${x} dm?`;
-      a = x*10; hint = "1 dm sind 10 cm.";
-    } else if (kind === 2) {
-      const h = rand(1,11);
-      q = `Es ist ${h}:00 Uhr. Wie spät ist es in einer Stunde? (volle Stunde)`;
-      a = h+1; hint = "Zähle eine Stunde weiter.";
-      if (a === 12) a = 12;
-    } else {
-      const x = rand(2,10);
-      q = `Ein Heft kostet ${x} €. Du kaufst 2 Hefte. Wie viel kostet das?`;
-      a = x*2; hint = "Verdopple den Preis.";
-    }
-  } else if (grade === 3) {
-    const kind = rand(1,3);
-    if (kind === 1) {
-      const m = rand(2,9);
-      q = `Wie viele Zentimeter sind ${m} Meter?`;
-      a = m*100; hint = "1 m sind 100 cm.";
-    } else if (kind === 2) {
-      const h = rand(1,20);
-      q = `Ein Film dauert ${h*5} Minuten. Wie viele Minuten sind das?`;
-      a = h*5; hint = "Lies die Minuten genau ab.";
-    } else {
-      const x = rand(2,9);
-      q = `Eine Flasche fasst ${x} Liter. Wie viele Liter sind es bei 3 Flaschen?`;
-      a = x*3; hint = "Multipliziere mit 3.";
-    }
-  } else {
-    const kind = rand(1,3);
-    if (kind === 1) {
-      const m = rand(2,9);
-      q = `Wie viele Meter sind ${m} Kilometer?`;
-      a = m*1000; hint = "1 km sind 1.000 m.";
-    } else if (kind === 2) {
-      const x = rand(2,9)*100;
-      q = `Ein Weg ist ${x} m lang. Wie viele Kilometer sind das als Dezimalzahl?`;
-      a = x/1000; hint = "1.000 m sind 1 km. Nutze ein Komma.";
-    } else {
-      const x = rand(2,12), y = rand(2,12);
-      q = `Ein Rechteck ist ${x} cm lang und ${y} cm breit. Wie groß ist sein Umfang in cm?`;
-      a = 2*(x+y); hint = "Addiere Länge und Breite und verdopple.";
-    }
+function measureTask(){
+  if(grade===1){
+    const a=rand(2,10),b=rand(1,a-1);
+    return {question:`Du hast ${a} Euro und gibst ${b} Euro aus. Wie viele Euro bleiben?`,
+      answer:a-b,hint:"Ziehe das ausgegebene Geld ab.",topic:"Geld"};
   }
-  return { question:q, answer:a, hint, topic:"Größen und Messen" };
+  if(grade===2){
+    const n=rand(1,9);
+    return {question:`Wie viele Zentimeter sind ${n} Dezimeter?`,
+      answer:n*10,hint:"1 Dezimeter = 10 Zentimeter.",topic:"Längen"};
+  }
+  if(grade===3){
+    const n=rand(2,9);
+    return {question:`Wie viele Zentimeter sind ${n} Meter?`,
+      answer:n*100,hint:"1 Meter = 100 Zentimeter.",topic:"Längen"};
+  }
+  const n=rand(2,9);
+  return {question:`Wie viele Meter sind ${n} Kilometer?`,
+    answer:n*1000,hint:"1 Kilometer = 1.000 Meter.",topic:"Längen"};
 }
 
-function geometryTask() {
-  if (grade === 1) {
-    const shapes = [
-      {q:"Wie viele Ecken hat ein Dreieck?",a:3},
-      {q:"Wie viele Seiten hat ein Quadrat?",a:4},
-      {q:"Wie viele Ecken hat ein Rechteck?",a:4}
-    ];
-    return {...pick(shapes), hint:"Zähle die Ecken oder Seiten.", topic:"Geometrie"};
+function geometryTask(){
+  if(grade===1){
+    return pick([
+      {question:"Wie viele Ecken hat ein Dreieck?",answer:3,hint:"Zähle die drei Ecken.",topic:"Geometrie"},
+      {question:"Wie viele Seiten hat ein Quadrat?",answer:4,hint:"Ein Quadrat hat vier Seiten.",topic:"Geometrie"},
+      {question:"Wie viele Ecken hat ein Rechteck?",answer:4,hint:"Zähle die Ecken.",topic:"Geometrie"}
+    ]);
   }
-  if (grade === 2) {
-    const x = rand(2,10);
-    return {question:`Ein Würfel hat ${x} sichtbare? Nein! Wie viele Flächen hat ein Würfel insgesamt?`,
-      answer:6, hint:"Ein Würfel hat oben, unten und vier Seitenflächen.", topic:"Geometrie"};
+  if(grade===2){
+    return pick([
+      {question:"Wie viele Flächen hat ein Würfel?",answer:6,hint:"Oben, unten und vier Seiten.",topic:"Geometrie"},
+      {question:"Wie viele Ecken hat ein Würfel?",answer:8,hint:"Zähle alle Eckpunkte.",topic:"Geometrie"},
+      {question:"Wie viele Kanten hat ein Würfel?",answer:12,hint:"Zähle die Kanten.",topic:"Geometrie"}
+    ]);
   }
-  if (grade === 3) {
-    const x=rand(2,20), y=rand(2,20);
-    return {question:`Ein Rechteck ist ${x} cm lang und ${y} cm breit. Wie groß ist die Fläche in cm²?`,
-      answer:x*y, hint:"Fläche = Länge × Breite.", topic:"Geometrie"};
+  const a=rand(2,grade===3?20:50),b=rand(2,grade===3?20:50);
+  if(grade===3){
+    return {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist die Fläche in cm²?`,
+      answer:a*b,hint:"Fläche = Länge × Breite.",topic:"Geometrie"};
   }
-  const kind = rand(1,3);
-  if (kind === 1) {
-    const x=rand(2,20), y=rand(2,20);
-    return {question:`Ein Rechteck ist ${x} cm lang und ${y} cm breit. Wie groß ist die Fläche in cm²?`,
-      answer:x*y, hint:"Fläche = Länge × Breite.", topic:"Geometrie"};
-  }
-  if (kind === 2) {
-    const x=rand(2,15);
-    return {question:`Ein Quadrat hat eine Seitenlänge von ${x} cm. Wie groß ist seine Fläche in cm²?`,
-      answer:x*x, hint:"Multipliziere die Seitenlänge mit sich selbst.", topic:"Geometrie"};
-  }
-  const x=rand(2,20), y=rand(2,20);
-  return {question:`Ein Rechteck ist ${x} cm lang und ${y} cm breit. Wie groß ist sein Umfang in cm?`,
-    answer:2*(x+y), hint:"Umfang = 2 × (Länge + Breite).", topic:"Geometrie"};
+  return pick([
+    {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist die Fläche in cm²?`,
+      answer:a*b,hint:"Fläche = Länge × Breite.",topic:"Geometrie"},
+    {question:`Ein Rechteck ist ${a} cm lang und ${b} cm breit. Wie groß ist sein Umfang in cm?`,
+      answer:2*(a+b),hint:"Umfang = 2 × (Länge + Breite).",topic:"Geometrie"}
+  ]);
 }
 
-function dataTask() {
-  const animals = ["Füchse","Hasen","Eulen","Igel"];
-  const x=rand(3,20), y=rand(2,19);
-  return {
-    question:`${animals[0]} haben ${x} Punkte, ${animals[1]} haben ${y} Punkte. Wie viele Punkte sind das zusammen?`,
-    answer:x+y, hint:"Addiere beide Punktzahlen.", topic:"Knobeln und Daten"
-  };
+function dataTask(){
+  const a=rand(3,20),b=rand(2,20);
+  return {question:`Eine Gruppe sammelt ${a} Sterne, eine zweite ${b}. Wie viele Sterne sind es zusammen?`,
+    answer:a+b,hint:"Addiere beide Zahlen.",topic:"Knobeln"};
 }
 
-function makeTask() {
-  let area = gameSettings.area;
-  if (area === "mix") {
-    area = pick(["calc","word","measure","geometry","data"]);
-  }
-  if (area === "calc") return numberTask(false);
-  if (area === "word") return numberTask(true);
-  if (area === "measure") return measureTask();
-  if (area === "geometry") return geometryTask();
+function makeTask(){
+  let area=settings.area;
+  if(area==="mix") area=pick(["calc","word","measure","geometry","data"]);
+  if(area==="calc") return numberTask(false);
+  if(area==="word") return numberTask(true);
+  if(area==="measure") return measureTask();
+  if(area==="geometry") return geometryTask();
   return dataTask();
 }
 
-function nextTask() {
-  if (current >= total) {
-    finishGame();
-    return;
-  }
+function nextTask(){
+  if(current>=total){finishGame();return;}
   current++;
-  task = makeTask();
-  locked = false;
-  $("counter").textContent = `${current}/${total}`;
-  $("score").textContent = points;
-  $("stars").textContent = `⭐ ${right}`;
-  $("progressBar").style.width = `${(current-1)/total*100}%`;
-  $("topicLabel").textContent = `Thema: ${task.topic}`;
-  $("question").textContent = task.question;
-  $("answer").value = "";
-  $("answer").disabled = false;
-  $("answer").focus();
-  $("feedback").textContent = "";
-  $("feedback").className = "";
-  $("hintText").textContent = "";
-  $("checkBtn").disabled = false;
+  task=makeTask();
+  locked=false;
+  $("counter").textContent=`${current}/${total}`;
+  $("score").textContent=points;
+  $("stars").textContent=`⭐ ${right}`;
+  $("bar").style.width=`${(current-1)/total*100}%`;
+  $("topic").textContent="Thema: "+task.topic;
+  $("question").textContent=task.question;
+  $("answer").value="";
+  $("answer").disabled=false;
+  $("check").disabled=false;
+  $("feedback").textContent="";
+  $("feedback").className="";
+  $("hint").textContent="";
 }
 
-function normalize(value) {
-  return String(value).trim().toLowerCase().replace(",", ".").replace(/\s/g,"");
-}
-
-function checkAnswer() {
-  if (locked) return;
-  const entered = $("answer").value;
-  if (!entered.trim()) {
-    $("feedback").textContent = "Gib zuerst deine Antwort ein. 😊";
+function checkAnswer(){
+  if(locked)return;
+  const value=$("answer").value.trim();
+  if(value===""){
+    $("feedback").textContent="Bitte gib zuerst eine Antwort ein. 😊";
+    $("feedback").className="bad";
     return;
   }
-  locked = true;
-  const isCorrect = normalize(entered) === normalize(task.answer);
-  if (isCorrect) {
+  locked=true;
+  const entered=Number(value.replace(",","."));
+  const correct=Number(task.answer);
+  if(Number.isFinite(entered)&&entered===correct){
     right++;
-    points += gameSettings.difficulty === "hard" ? 3 :
-              gameSettings.difficulty === "normal" ? 2 : 1;
-    $("feedback").textContent = "🎉 Richtig! Super gemacht!";
-    $("feedback").className = "correct";
-  } else {
-    $("feedback").textContent = `Noch nicht ganz. Die richtige Antwort ist: ${task.answer}`;
-    $("feedback").className = "wrong";
+    points+=settings.difficulty==="hard"?3:settings.difficulty==="normal"?2:1;
+    $("feedback").textContent="🎉 Richtig! Super gemacht!";
+    $("feedback").className="good";
+  }else{
+    $("feedback").textContent="Noch nicht ganz. Die richtige Antwort ist: "+task.answer;
+    $("feedback").className="bad";
   }
-  $("score").textContent = points;
-  $("stars").textContent = `⭐ ${right}`;
-  $("progressBar").style.width = `${current/total*100}%`;
-  $("answer").disabled = true;
-  $("checkBtn").disabled = true;
-
-  const next = document.createElement("button");
-  next.textContent = current === total ? "Ergebnis ansehen 🏆" : "Nächste Aufgabe ➜";
-  next.onclick = () => {
-    next.remove();
-    nextTask();
-  };
+  $("score").textContent=points;
+  $("stars").textContent=`⭐ ${right}`;
+  $("bar").style.width=`${current/total*100}%`;
+  $("answer").disabled=true;
+  $("check").disabled=true;
+  const next=document.createElement("button");
+  next.textContent=current===total?"Ergebnis ansehen 🏆":"Nächste Aufgabe ➜";
+  next.onclick=nextTask;
   $("feedback").appendChild(document.createElement("br"));
   $("feedback").appendChild(next);
 }
 
-function showHint() {
-  $("hintText").textContent = "💡 Tipp: " + task.hint;
+function showHint(){
+  if(task) $("hint").textContent="💡 Tipp: "+task.hint;
 }
+$("answer").addEventListener("keydown",e=>{
+  if(e.key==="Enter")checkAnswer();
+});
 
-function finishGame() {
+function finishGame(){
   $("game").classList.add("hidden");
   $("result").classList.remove("hidden");
-  $("progressBar").style.width = "100%";
-  const percent = Math.round(right / total * 100);
-  $("resultText").innerHTML =
-    `<p>Klasse ${grade} – ${playerName}</p>
-     <p>Du hast <strong>${right} von ${total}</strong> Aufgaben richtig gelöst.</p>
-     <p>Ergebnis: <strong>${percent}%</strong></p>
-     <p>Punkte: <strong>${points}</strong> ⭐</p>` +
-     (percent >= 75
-       ? "<p>🎉 Großartig! Du hast das Abenteuer erfolgreich abgeschlossen!</p>"
-       : "<p>Weiter üben! Du schaffst das beim nächsten Mal. 💪</p>");
+  const percent=Math.round(right/total*100);
+  $("resultText").innerHTML=
+    `<p>${escapeHTML(playerName)} – Klasse ${grade}</p>
+    <p>Richtig: <strong>${right} von ${total}</strong></p>
+    <p>Ergebnis: <strong>${percent}%</strong></p>
+    <p>Punkte: <strong>${points} ⭐</strong></p>`+
+    (percent>=75
+      ?"<p>🎉 Großartig! Du hast das Abenteuer erfolgreich abgeschlossen!</p>"
+      :"<p>Übe weiter. Du schaffst es beim nächsten Mal! 💪</p>");
 
-  // Nur vollständig beendete Runden werden gespeichert.
-  saveRecord({name:playerName, grade, percent, points, date:new Date().toLocaleDateString("de-AT")});
-
-  if (percent >= 75) {
+  if(percent>=75){
     $("certificate").classList.remove("hidden");
-    $("certificateName").textContent = playerName;
-    $("certificateDetails").textContent =
-      `Klasse ${grade} · ${right}/${total} richtig · ${percent}%`;
-    $("certificateDate").textContent = new Date().toLocaleDateString("de-AT");
-  } else {
+    $("certName").textContent=playerName;
+    $("certDetails").textContent=`Klasse ${grade} · ${right}/${total} richtig · ${percent}%`;
+    $("certDate").textContent=new Date().toLocaleDateString("de-AT");
+  }else{
     $("certificate").classList.add("hidden");
   }
+  saveRecord({name:playerName,grade,percent,points,date:new Date().toLocaleDateString("de-AT")});
   renderRecords();
 }
 
-function abortGame() {
-  if (!confirm("Möchtest du wirklich abbrechen? Dein Ergebnis wird nicht gespeichert und du erhältst kein Zertifikat.")) return;
-  // Unvollständige Runde wird nicht gespeichert.
+function abortGame(){
+  if(!confirm("Wirklich abbrechen? Diese Runde wird nicht gespeichert."))return;
   $("game").classList.add("hidden");
+  $("setup").classList.remove("hidden");
+  $("records").classList.remove("hidden");
+  $("result").classList.add("hidden");
+}
+
+function newGame(){
   $("result").classList.add("hidden");
   $("setup").classList.remove("hidden");
-  $("bestScore").classList.remove("hidden");
+  $("records").classList.remove("hidden");
 }
+function backToSetup(){newGame();}
 
-function newGame() {
-  $("result").classList.add("hidden");
-  $("setup").classList.remove("hidden");
-  $("bestScore").classList.remove("hidden");
-}
-
-function backToSetup() { newGame(); }
-
-function saveRecord(record) {
-  try {
-    const records = JSON.parse(localStorage.getItem("matheAbenteuerRecords") || "[]");
-    records.push(record);
-    records.sort((a,b) => b.percent-a.percent || b.points-a.points);
-    localStorage.setItem("matheAbenteuerRecords", JSON.stringify(records.slice(0,10)));
-  } catch (e) {
-    // Das Spiel bleibt auch dann nutzbar, wenn der Browser nichts speichern darf.
-  }
-}
-
-function renderRecords() {
-  try {
-    const records = JSON.parse(localStorage.getItem("matheAbenteuerRecords") || "[]");
-    $("recordText").innerHTML = records.length
-      ? records.map((r,i) =>
-          `${i+1}. ${escapeHTML(r.name)} – Klasse ${r.grade}: ${r.percent}% (${r.date})`
-        ).join("<br>")
-      : "Noch keine abgeschlossenen Abenteuer.";
-  } catch(e) {
-    $("recordText").textContent = "Rekorde können in diesem Browser nicht angezeigt werden.";
-  }
-}
-
-function escapeHTML(s) {
-  return String(s).replace(/[&<>"']/g, c => ({
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[c]));
 }
 
-function clearRecords() {
-  if (!confirm("Möchtest du alle gespeicherten Bestleistungen löschen?")) return;
+function saveRecord(record){
+  try{
+    const records=JSON.parse(localStorage.getItem("matheAbenteuerRecords")||"[]");
+    records.push(record);
+    records.sort((a,b)=>b.percent-a.percent||b.points-a.points);
+    localStorage.setItem("matheAbenteuerRecords",JSON.stringify(records.slice(0,10)));
+  }catch(e){}
+}
+
+function renderRecords(){
+  try{
+    const records=JSON.parse(localStorage.getItem("matheAbenteuerRecords")||"[]");
+    $("recordText").innerHTML=records.length
+      ?records.map((r,i)=>`${i+1}. ${escapeHTML(r.name)} – Klasse ${r.grade}: ${r.percent}% (${escapeHTML(r.date)})`).join("<br>")
+      :"Noch keine Bestleistungen gespeichert.";
+  }catch(e){
+    $("recordText").textContent="Bestleistungen sind in diesem Browser nicht verfügbar.";
+  }
+}
+
+function clearRecords(){
+  if(!confirm("Alle Bestleistungen löschen?"))return;
   localStorage.removeItem("matheAbenteuerRecords");
   renderRecords();
 }
-
-$("answer").addEventListener("keydown", event => {
-  if (event.key === "Enter") checkAnswer();
-});
 renderRecords();
 </script>
 </body>
