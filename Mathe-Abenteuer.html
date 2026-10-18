@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mathe-Abenteuer</title>
+
+<style>
+* { 
+  box-sizing: border-box; 
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+  margin: 0;
+  padding: 15px;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Trebuchet MS", Arial, sans-serif;
+  text-align: center;
+  color: #23436c;
+  background: linear-gradient(135deg, #80edcf, #92d5ff, #f9d4ff, #fff0a8);
+  -webkit-text-size-adjust: 100%;
+}
+
+.spiel {
+  max-width: 570px;
+  margin: 15px auto;
+  padding: 24px;
+  background: rgba(255,255,255,.96);
+  border: 4px solid white;
+  border-radius: 28px;
+  box-shadow: 0 10px 30px #24416b25;
+}
+
+h1 { color: #7042bd; margin: 5px; }
+
+.tier { font-size: 75px; margin: 8px; }
+
+label {
+  display: block;
+  margin-top: 16px;
+  font-weight: bold;
+  text-align: left;
+}
+
+select, input, textarea, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 13px;
+  font: inherit;
+}
+
+select, input, textarea {
+  border: 2px solid #c5d2f0;
+  background: white;
+  color: #23436c;
+  -webkit-appearance: none;
+  font-size: 16px; /* Verhindert automatisches Zoomen auf iPhones */
+}
+
+input {
+  font-size: 24px;
+  text-align: center;
+}
+
+textarea {
+  min-height: 100px;
+  font-size: 17px;
+  resize: vertical;
+  background: #fffdf5;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform .15s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+button:active { transform: scale(0.98); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+
+.pruefen { background: #2fbd69; color: white; font-size: 20px; }
+.weiter { background: #3288f4; color: white; }
+.ton { background: #8153d7; color: white; }
+.neustart { background: #ffe3a3; color: #66420b; }
+
+.punkte {
+  padding: 13px;
+  margin: 16px 0;
+  border-radius: 14px;
+  background: #fff0ad;
+  color: #8c5900;
+  font-size: 21px;
+  font-weight: bold;
+}
+
+.aufgabe {
+  padding: 22px 12px;
+  margin: 14px 0;
+  border-radius: 18px;
+  background: #f0eaff;
+  color: #5935b1;
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.sachaufgabe {
+  font-size: 21px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.timer {
+  background: #dff7e7;
+  color: #18743b;
+  padding: 13px;
+  border-radius: 14px;
+  margin-top: 18px;
+  font-size: 21px;
+  font-weight: bold;
+}
+
+.timer.warnung { background: #ffc9c9; color: #a32020; }
+
+#meldung {
+  min-height: 30px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.info { color: #58728f; }
+
+#konfetti {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@media (max-width: 420px) {
+  .spiel { padding: 16px; }
+}
+</style>
+</head>
+
+<body>
+<canvas id="konfetti"></canvas>
+
+<main class="spiel">
+
+  <h1>🌈 Mathe-Abenteuer</h1>
+  <p>Rechnen macht Spaß!</p>
+
+  <div class="tier" id="tier">🦊</div>
+  <p id="tierText">Hallo! Lass uns zusammen rechnen!</p>
+
+  <!-- TEIL 1: STARTBEREICH -->
+  <div id="startbereich">
+    <label for="stufe">1. Welche Schulstufe?</label>
+    <select id="stufe" onchange="auswahlAendern()">
+      <option value="1">1. Klasse</option>
+      <option value="2">2. Klasse</option>
+      <option value="3">3. Klasse</option>
+      <option value="4">4. Klasse</option>
+    </select>
+
+    <label for="aufgabentyp">2. Was möchtest du üben?</label>
+    <select id="aufgabentyp" onchange="auswahlAendern()">
+      <option value="rechnung">🧮 Rechenbeispiele</option>
+      <option value="sache">📖 Sachbeispiele / Textaufgaben</option>
+    </select>
+
+    <label for="rechenart">3. Welche Rechenart?</label>
+    <select id="rechenart" onchange="auswahlAendern()">
+      <option value="addition">➕ Addition (Plus)</option>
+      <option value="subtraktion">➖ Subtraktion (Minus)</option>
+      <option value="multiplikation">✖️ Multiplikation (Mal)</option>
+      <option value="division">➗ Division (Geteilt)</option>
+    </select>
+
+    <button type="button" class="weiter" id="startKnopf" onclick="spielStarten()" style="margin-top: 20px;">
+      🚀 Spiel starten
+    </button>
+
+    <p class="info" id="erklaerung">
+      Wähle deine Klasse, den Aufgabentyp und die Rechenart.
+    </p>
+  </div>
+
+  <!-- TEIL 2: SPIELBEREICH -->
+  <div id="spielbereich" style="display: none;">
+
+    <div class="punkte">
+      ⭐ Punkte: <span id="punkte">0</span>
+    </div>
+
+    <div class="aufgabe" id="aufgabe">
+      Bereit?
+    </div>
+
+    <label for="zwischenrechnung">
+      ✏️ Mein Rechenweg (freiwillig)
+    </label>
+    <textarea id="zwischenrechnung" placeholder="Schreibe hier deinen Rechenweg auf ..."></textarea>
+
+    <label for="antwort">4. Antwort eingeben</label>
+    <input id="antwort" type="number" step="1" placeholder="Dein Ergebnis" autocomplete="off" inputmode="numeric">
+
+    <button type="button" class="pruefen" id="pruefenKnopf" onclick="pruefen()">
+      ✅ Antwort prüfen
+    </button>
+
+    <button type="button" class="weiter" id="weiterKnopf" onclick="naechsteAufgabe()">
+      ➡️ Nächste Aufgabe
+    </button>
+
+    <p id="meldung" aria-live="polite"></p>
+
+    <div class="timer" id="timerBox">
+      ⏱️ Verbleibende Zeit:
+      <span id="timer">60</span> Sekunden
+    </div>
+
+    <p class="info">
+      🏆 Richtige Antworten: <strong id="richtig">0</strong>
+    </p>
+
+    <p class="info">
+      Punkte für richtige Antworten:<br>
+      0–20 Sekunden: 10 Punkte<br>
+      21–40 Sekunden: 8 Punkte<br>
+      41–59 Sekunden: 6 Punkte
+    </p>
+
+    <section id="endbereich" style="display:none; margin-top:20px; padding:20px; border-radius:18px; background:#e9f8ee;">
+      <h2>🏆 Geschafft! Deine Runde ist beendet!</h2>
+      <p id="endergebnisText"></p>
+      <button type="button" class="weiter" id="nochmalKnopf" onclick="nochmalSpielen()">🔄 Noch eine Runde spielen</button>
+    </section>
+
+    <button type="button" class="ton" id="tonKnopf" onclick="tonUmschalten()">🔊 Töne: an</button>
+    <button type="button" class="neustart" id="neustartKnopf" onclick="spielStoppen()">🔄 Neues Spiel starten</button>
+
+  </div>
+
+</main>
+
+<script>
+// ======================================
+// 1. SPIELDATEN
+// ======================================
+
+var punkte = 0;
+var richtig = 0;
+var aktuelleAufgabe = null;
+var beantwortet = true;
+var spielGestartet = false;
+var tonAn = true;
+var startZeit = 0;
+var timerIntervall = null;
+var audioKontext = null;
+var aufgabenNummer = 0;
+var MAX_AUFGABEN = 10;
+
+var SPIELZEIT = 60;
+var grenzen = [20, 100, 1000, 10000];
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+// Sichere Audio-Initialisierung für iOS
+function audioEntsperren() {
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx && !audioKontext) {
+      audioKontext = new AudioCtx();
+    }
+    if (audioKontext && audioKontext.state === "suspended") {
+      audioKontext.resume();
+    }
+  } catch (e) {
+    // Audio-Fehler werden ignoriert, damit das Spiel trotzdem funktioniert
+  }
+}
+
+function artName(art) {
+  if (art === "addition") return "Addition – Plusrechnen";
+  if (art === "subtraktion") return "Subtraktion – Minusrechnen";
+  if (art === "multiplikation") return "Multiplikation – Malrechnen";
+  if (art === "division") return "Division – Geteiltrechnen";
+  return "";
+}
+
+function auswahlAendern() {
+  if (spielGestartet) spielStoppen();
+
+  try {
+    var stufe = Number($("stufe").value);
+    var rechenartSelect = $("rechenart");
+    var opts = rechenartSelect.options;
+
+    for (var i = 0; i < opts.length; i++) {
+      if (stufe === 1 && (opts[i].value === "multiplikation" || opts[i].value === "division")) {
+        opts[i].disabled = true;
+      } else {
+        opts[i].disabled = false;
+      }
+    }
+
+    if (stufe === 1 && (rechenartSelect.value === "multiplikation" || rechenartSelect.value === "division")) {
+      rechenartSelect.value = "addition";
+    }
+
+    var typSel = $("aufgabentyp");
+    var typText = typSel.options[typSel.selectedIndex].text;
+
+    $("erklaerung").textContent =
+      stufe + ". Klasse · " + typText + " · " + artName(rechenartSelect.value);
+  } catch (e) {}
+}
+
+function zufallszahl(max) {
+  return Math.floor(Math.random() * (max + 1));
+}
+
+function aufgabeBerechnen(stufe, art) {
+  var max = grenzen[stufe - 1];
+  var a, b, ergebnis, zeichen;
+
+  if (art === "addition") {
+    a = zufallszahl(max);
+    b = zufallszahl(max - a);
+    ergebnis = a + b;
+    zeichen = "+";
+  } else if (art === "subtraktion") {
+    a = zufallszahl(max);
+    b = zufallszahl(a);
+    ergebnis = a - b;
+    zeichen = "−";
+  } else if (art === "multiplikation") {
+    if (stufe === 2) {
+      a = 1 + zufallszahl(10);
+      b = 1 + zufallszahl(10);
+    } else if (stufe === 3) {
+      a = 1 + zufallszahl(20);
+      b = 1 + zufallszahl(10);
+    } else {
+      a = 1 + zufallszahl(100);
+      b = 1 + zufallszahl(20);
+    }
+    ergebnis = a * b;
+    zeichen = "×";
+  } else {
+    if (stufe === 2) {
+      b = 1 + zufallszahl(10);
+      ergebnis = zufallszahl(10);
+    } else if (stufe === 3) {
+      b = 1 + zufallszahl(20);
+      ergebnis = zufallszahl(50);
+    } else {
+      b = 1 + zufallszahl(100);
+      ergebnis = zufallszahl(100);
+    }
+    a = b * ergebnis;
+    zeichen = "÷";
+  }
+
+  return { a: a, b: b, ergebnis: ergebnis, zeichen: zeichen, art: art };
+}
+
+function sachtextErstellen(daten, stufe) {
+  var a = daten.a;
+  var b = daten.b;
+  var art = daten.art;
+
+  var namen = ["Lena", "Paul", "Mia", "Ben", "Emma", "Leo"];
+  var name = namen[zufallszahl(namen.length - 1)];
+
+  var dinge = [
+    { singular: "Apfel", plural: "Äpfel" },
+    { singular: "Sticker", plural: "Sticker" },
+    { singular: "Buch", plural: "Bücher" },
+    { singular: "Ball", plural: "Bälle" }
+  ];
+  var ding = dinge[zufallszahl(dinge.length - 1)];
+
+  if (art === "addition") {
+    return name + " hat " + a + " " + ding.plural + ". Sie bekommt " + b + " " + ding.plural + " dazu. Wie viele " + ding.plural + " hat " + name + " jetzt?";
+  } else if (art === "subtraktion") {
+    return name + " hat " + a + " " + ding.plural + ". " + b + " " + ding.plural + " werden weggenommen oder verschenkt. Wie viele " + ding.plural + " bleiben übrig?";
+  } else if (art === "multiplikation") {
+    return name + " hat " + a + " Päckchen. In jedem Päckchen sind " + b + " " + ding.plural + ". Wie viele " + ding.plural + " sind es insgesamt?";
+  } else {
+    return name + " verteilt " + a + " " + ding.plural + " gleichmäßig auf " + b + " Kinder. Wie viele " + ding.plural + " bekommt jedes Kind?";
+  }
+}
+
+function neueAufgabe() {
+  var stufe = Number($("stufe").value);
+  var art = $("rechenart").value;
+  var typ = $("aufgabentyp").value;
+
+  var daten = aufgabeBerechnen(stufe, art);
+  aktuelleAufgabe = daten;
+
+  if (typ === "sache") {
+    $("aufgabe").textContent = sachtextErstellen(daten, stufe);
+    $("aufgabe").className = "aufgabe sachaufgabe";
+  } else {
+    $("aufgabe").textContent = daten.a + " " + daten.zeichen + " " + daten.b + " = ?";
+    $("aufgabe").className = "aufgabe";
+  }
+
+  $("zwischenrechnung").value = "";
+  $("antwort").value = "";
+  $("meldung").textContent = "";
+  $("tier").textContent = "🦊";
+  $("tierText").textContent = "Lies die Aufgabe genau und überlege in Ruhe!";
+
+  $("pruefenKnopf").disabled = false;
+  $("weiterKnopf").disabled = true;
+
+  beantwortet = false;
+  timerStarten();
+}
+
+// HAUPTFUNKTION: SPIEL STARTEN (Garantierte Umschaltung für iOS)
+function spielStarten() {
+  audioEntsperren();
+
+  if (timerIntervall) clearInterval(timerIntervall);
+
+  punkte = 0;
+  richtig = 0;
+  aufgabenNummer = 0;
+  spielGestartet = true;
+
+  // Direkter Wechsel der Sichtbarkeit
+  document.getElementById("startbereich").style.display = "none";
+  document.getElementById("spielbereich").style.display = "block";
+
+  $("endbereich").style.display = "none";
+  $("antwort").disabled = false;
+  $("zwischenrechnung").disabled = false;
+  $("punkte").textContent = "0";
+  $("richtig").textContent = "0";
+
+  neueAufgabe();
+}
+
+function spielStoppen() {
+  if (timerIntervall) clearInterval(timerIntervall);
+
+  spielGestartet = false;
+  beantwortet = true;
+
+  document.getElementById("startbereich").style.display = "block";
+  document.getElementById("spielbereich").style.display = "none";
+
+  $("timer").textContent = SPIELZEIT;
+  $("timerBox").className = "timer";
+  $("pruefenKnopf").disabled = true;
+  $("weiterKnopf").disabled = true;
+
+  $("aufgabe").textContent = "Bereit?";
+  $("meldung").textContent = "";
+  $("zwischenrechnung").value = "";
+  $("antwort").value = "";
+  $("tier").textContent = "🦊";
+  $("tierText").textContent = "Hallo! Lass uns zusammen rechnen!";
+}
+
+function naechsteAufgabe() {
+  audioEntsperren();
+  if (!spielGestartet || !beantwortet) return;
+
+  if (aufgabenNummer >= MAX_AUFGABEN - 1) {
+    aufgabenNummer = MAX_AUFGABEN;
+    endergebnisAnzeigen();
+    return;
+  }
+
+  aufgabenNummer++;
+  neueAufgabe();
+}
+
+function endergebnisAnzeigen() {
+  if (timerIntervall) clearInterval(timerIntervall);
+  spielGestartet = false;
+  beantwortet = true;
+
+  $("endbereich").style.display = "block";
+  $("endergebnisText").textContent =
+    "Du hast " + richtig + " von " + MAX_AUFGABEN + " Aufgaben richtig gelöst und " + punkte + " Punkte erreicht. " +
+    "Das sind durchschnittlich " + (punkte / MAX_AUFGABEN).toFixed(1).replace(".", ",") + " Punkte pro Aufgabe.";
+
+  $("aufgabe").textContent = "Runde beendet! 🎉";
+  $("meldung").textContent = "Toll, dass du mitgespielt hast!";
+  $("pruefenKnopf").disabled = true;
+  $("weiterKnopf").disabled = true;
+  $("antwort").disabled = true;
+  $("zwischenrechnung").disabled = true;
+  $("timer").textContent = "0";
+  $("tier").textContent = richtig >= 8 ? "🦊🏆" : richtig >= 5 ? "🦊⭐" : "🦊💪";
+  $("tierText").textContent =
+    richtig >= 8 ? "Fantastisch! Du bist ein Mathe-Profi!" :
+    richtig >= 5 ? "Gut gemacht! Übung macht dich noch starker!" :
+    "Weiter üben – du schaffst das!";
+}
+
+function nochmalSpielen() {
+  audioEntsperren();
+  $("antwort").disabled = false;
+  $("zwischenrechnung").disabled = false;
+  spielStarten();
+}
+
+function timerStarten() {
+  if (timerIntervall) clearInterval(timerIntervall);
+  startZeit = Date.now();
+
+  $("timer").textContent = SPIELZEIT;
+  $("timerBox").className = "timer";
+
+  timerIntervall = setInterval(function() {
+    if (!spielGestartet || beantwortet) {
+      clearInterval(timerIntervall);
+      return;
+    }
+
+    var vergangen = Math.floor((Date.now() - startZeit) / 1000);
+    var verbleibend = Math.max(0, SPIELZEIT - vergangen);
+    $("timer").textContent = verbleibend;
+
+    if (verbleibend <= 10) {
+      $("timerBox").className = "timer warnung";
+    }
+
+    if (verbleibend <= 0) {
+      clearInterval(timerIntervall);
+      beantwortet = true;
+
+      $("meldung").textContent = "⏰ Zeit abgelaufen! Für diese Aufgabe gibt es keine Punkte.";
+      $("meldung").style.color = "#d45c43";
+      $("tierText").textContent = "Macht nichts! Probiere die nächste Aufgabe.";
+      $("pruefenKnopf").disabled = true;
+      $("weiterKnopf").disabled = false;
+
+      spieleTon(false);
+    }
+  }, 200);
+}
+
+function pruefen() {
+  audioEntsperren();
+  if (!spielGestartet || beantwortet) return;
+
+  var eingabe = $("antwort").value;
+
+  if (eingabe.trim() === "") {
+    $("meldung").textContent = "Bitte gib zuerst deine Antwort ein! 😊";
+    return;
+  }
+
+  var antwort = Number(eingabe);
+  var vergangen = Math.floor((Date.now() - startZeit) / 1000);
+
+  if (vergangen >= SPIELZEIT) {
+    clearInterval(timerIntervall);
+    $("timer").textContent = "0";
+    beantwortet = true;
+
+    $("meldung").textContent = "⏰ Die Zeit ist abgelaufen!";
+    $("pruefenKnopf").disabled = true;
+    $("weiterKnopf").disabled = false;
+    spieleTon(false);
+    return;
+  }
+
+  clearInterval(timerIntervall);
+  beantwortet = true;
+
+  if (antwort === aktuelleAufgabe.ergebnis) {
+    var gewonnenePunkte = 6;
+    if (vergangen <= 20) gewonnenePunkte = 10;
+    else if (vergangen <= 40) gewonnenePunkte = 8;
+
+    punkte += gewonnenePunkte;
+    richtig++;
+
+    $("meldung").textContent = "🎉 Richtig! +" + gewonnenePunkte + " Punkte!";
+    $("meldung").style.color = "#159447";
+    $("tier").textContent = "🦊🥳";
+    $("tierText").textContent = "Super! Du hast nach " + vergangen + " Sekunden richtig gerechnet!";
+
+    spieleTon(true);
+    konfettiStarten();
+  } else {
+    $("meldung").textContent = "Fast! Die richtige Lösung ist " + aktuelleAufgabe.ergebnis + ".";
+    $("meldung").style.color = "#d45c43";
+    $("tier").textContent = "🐻";
+    $("tierText").textContent = "Weiter üben! Aus Fehlern lernt man.";
+
+    spieleTon(false);
+  }
+
+  $("punkte").textContent = punkte;
+  $("richtig").textContent = richtig;
+  $("pruefenKnopf").disabled = true;
+  $("weiterKnopf").disabled = false;
+}
+
+$("antwort").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") pruefen();
+});
+
+function spieleTon(istRichtig) {
+  if (!tonAn) return;
+
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    if (!audioKontext) audioKontext = new AudioCtx();
+
+    if (audioKontext.state === "suspended") {
+      audioKontext.resume();
+    }
+
+    var jetzt = audioKontext.currentTime;
+    var frequenzen = istRichtig ? [523, 659, 784] : [300];
+
+    frequenzen.forEach(function(frequenz, index) {
+      var oscillator = audioKontext.createOscillator();
+      var lautstaerke = audioKontext.createGain();
+      var start = jetzt + index * 0.13;
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequenz;
+
+      lautstaerke.gain.setValueAtTime(0.001, start);
+      lautstaerke.gain.exponentialRampToValueAtTime(0.12, start + 0.02);
+      lautstaerke.gain.exponentialRampToValueAtTime(0.001, start + 0.2);
+
+      oscillator.connect(lautstaerke);
+      lautstaerke.connect(audioKontext.destination);
+
+      oscillator.start(start);
+      oscillator.stop(start + 0.22);
+    });
+  } catch (e) {}
+}
+
+function tonUmschalten() {
+  audioEntsperren();
+  tonAn = !tonAn;
+  $("tonKnopf").textContent = tonAn ? "🔊 Töne: an" : "🔇 Töne: aus";
+}
+
+// Konfetti
+var canvas = $("konfetti");
+var ctx = canvas.getContext("2d");
+var teilchen = [];
+var animationId = null;
+
+function canvasAnpassen() {
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  canvas.style.width = window.innerWidth + "px";
+  canvas.style.height = window.innerHeight + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+window.addEventListener("resize", canvasAnpassen);
+canvasAnpassen();
+
+function konfettiStarten() {
+  if (animationId !== null) cancelAnimationFrame(animationId);
+  teilchen = [];
+
+  var farben = ["#ff4757", "#ffa502", "#2ed573", "#1e90ff", "#e056fd", "#ffd32a"];
+
+  for (var i = 0; i < 150; i++) {
+    teilchen.push({
+      x: Math.random() * window.innerWidth,
+      y: -Math.random() * window.innerHeight,
+      breite: 5 + Math.random() * 7,
+      hoehe: 7 + Math.random() * 9,
+      farbe: farben[Math.floor(Math.random() * farben.length)],
+      tempo: 2 + Math.random() * 4,
+      drehung: Math.random() * 360,
+      seitwaerts: Math.random() * 3 - 1.5
+    });
+  }
+  zeichneKonfetti();
+}
+
+function zeichneKonfetti() {
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+  teilchen.forEach(function(t) {
+    ctx.save();
+    ctx.translate(t.x, t.y);
+    ctx.rotate(t.drehung * Math.PI / 180);
+    ctx.fillStyle = t.farbe;
+    ctx.fillRect(-t.breite / 2, -t.hoehe / 2, t.breite, t.hoehe);
+    ctx.restore();
+
+    t.y += t.tempo;
+    t.x += t.seitwaerts;
+    t.drehung += 4;
+  });
+
+  teilchen = teilchen.filter(function(t) {
+    return t.y < window.innerHeight + 20;
+  });
+
+  if (teilchen.length > 0) {
+    animationId = requestAnimationFrame(zeichneKonfetti);
+  } else {
+    animationId = null;
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  }
+}
+
+// Initialisierung beim Laden der Seite
+auswahlAendern();
+spielStoppen();
+
+</script>
+</body>
+</html>
